@@ -22,13 +22,15 @@ public class Wygrana {
 
         Set<Integer> wygrana = new HashSet<>();
 
-        while (liczby.containsAll(wygrana)) {
+        System.out.println();
+        do {
+            wygrana.clear();
             while (wygrana.size() < 6) {
                 int liczba = random.nextInt(49) + 1;
                 wygrana.add(liczba);
             }
-            System.out.println("Wylosowane liczby Lotto: " + wygrana);
-        }
+            //System.out.println("Wylosowane liczby Lotto: " + wygrana);
+        } while  (!liczby.containsAll(wygrana));
         long endTime = System.currentTimeMillis();
         long duration = endTime - startTime;
         System.out.println("\nWygrana po: " + duration + " ms");
