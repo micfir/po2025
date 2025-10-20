@@ -1,5 +1,3 @@
-package Lab1;
-
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
