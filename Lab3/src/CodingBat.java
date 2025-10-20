@@ -1,6 +1,7 @@
 
 public class CodingBat{
     public static void main(String[] args) {
+        CodingBatTest test = new CodingBatTest();
     }
     //Warmup 1_1
     public String backAround(String str) {
@@ -20,7 +21,7 @@ public class CodingBat{
         return "Hello " + name + "!";
     }
     //Array 2
-    public int countEvens(int[] nums) {
+    static int countEvens(int[] nums) {
         int count = 0;
         for (int i = 0; i < nums.length; i++){
             if (nums[i] % 2 == 0) count++;
