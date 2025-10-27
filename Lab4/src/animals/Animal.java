@@ -11,4 +11,8 @@ public abstract class Animal {
 
     }
     public abstract String getDescription();
+
+    public int getLegs() {
+        return legs;
+    }
 }
