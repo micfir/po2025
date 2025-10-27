@@ -15,4 +15,8 @@ public abstract class Animal {
     public int getLegs() {
         return legs;
     }
+
+    public void makeSound() {
+
+    }
 }
