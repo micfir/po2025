@@ -1,11 +1,11 @@
-package org.example;
+package Samochód.src.main.java.org.example;
 
 public abstract class Komponent {
-    String producent;
-    String model;
-    String nazwa;
-    double waga;
-    double cena;
+    protected String producent;
+    protected String model;
+    protected String nazwa;
+    protected double waga;
+    protected double cena;
 
     public Komponent(String nazwa, double waga, double cena, String producent, String model) {
         this.nazwa = nazwa;
@@ -33,5 +33,10 @@ public abstract class Komponent {
 
     public String getModel() {
         return model;
+    }
+
+    @Override
+    public String toString() {
+        return nazwa + " (" + producent + " " + model + "), waga=" + waga + "kg, cena=" + cena;
     }
 }
