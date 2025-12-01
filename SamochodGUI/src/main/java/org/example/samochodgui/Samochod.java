@@ -86,7 +86,6 @@ public class Samochod {
     }
 
     public void przeliczPredkosc() {
-        // Jeśli silnik jest wyłączony, prędkość = 0
         if (!stanWlaczenia) {
             aktualnaPredkosc = 0;
             return;

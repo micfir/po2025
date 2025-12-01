@@ -21,6 +21,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import java.io.IOException;
+
 public class HelloController {
 
     private Samochod aktualnySamochod;
@@ -66,13 +71,6 @@ public class HelloController {
 
     @FXML
     public void initialize() {
-        Silnik silnik = new Silnik("Silnik V4", 100.0, 5000.0, "A", "V4-200", 6000);
-        Sprzeglo sprzeglo = new Sprzeglo("Standardowe sprzęgło", 10.0, 200.0, "A", "B100", false); // Zmienione na false
-        SkrzyniaBiegow skrzynia = new SkrzyniaBiegow("Skrzynia 6 biegów", 50.0, 1500.0, "A", "GB", 6, sprzeglo);
-        Pozycja start = new Pozycja(0, 0);
-
-        this.aktualnySamochod = new Samochod("KR12345", "ModelX", 200, silnik, skrzynia, start);
-
         initializeCarDetails();
         updateCarStateDisplay();
     }
@@ -159,8 +157,10 @@ public class HelloController {
     private void onGearUpButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
             int stareObroty = aktualnySamochod.getSilnik().getObroty();
+            int staryBieg = aktualnySamochod.getSkrzynia().getAktBieg();
             aktualnySamochod.getSkrzynia().zwiekszBieg();
-            if (aktualnySamochod.getSkrzynia().getAktBieg() > 1) { // Zakładamy, że nie redukujemy obrotów ruszając z luzu
+            int nowyBieg = aktualnySamochod.getSkrzynia().getAktBieg();
+            if (aktualnySamochod.getSkrzynia().getAktBieg() > 1) {
                 int noweObroty = (int) (stareObroty * 0.7);
                 aktualnySamochod.getSilnik().setObroty(noweObroty);
             }
@@ -222,9 +222,33 @@ public class HelloController {
     }
 
     // Górny Panel
+    public void dodajSamochodDoListy(Samochod nowySamochod) {
+        System.out.println("Otrzymano nowy samochód: " + nowySamochod.getModel());
+        this.aktualnySamochod = nowySamochod;
+        this.aktualnySamochod.wlacz();
+
+        initializeCarDetails();
+        updateCarStateDisplay();
+    }
+
     @FXML
     private void onCarAddButton() {
-        System.out.println("Panel: Dodaję nowy samochód (implementacja dodawania).");
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("DodajSamochod.fxml"));
+            Scene scene = new Scene(loader.load());
+
+            DodajSamochodController controller = loader.getController();
+
+            controller.setMainController(this);
+
+            Stage stage = new Stage();
+            stage.setTitle("Dodaj nowy samochód");
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -236,5 +260,6 @@ public class HelloController {
     private void onGenericCarButton() {
         System.out.println("Samochód: Wykonuję ogólną akcję.");
     }
+
 
 }
