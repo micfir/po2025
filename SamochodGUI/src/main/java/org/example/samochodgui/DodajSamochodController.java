@@ -13,7 +13,6 @@ public class DodajSamochodController {
     @FXML private TextField modelTextField;
     @FXML private TextField registrationTextField;
     @FXML private TextField speedTextField;
-    // @FXML private TextField weightTextField;
 
     @FXML private ComboBox<Silnik> engineComboBox;
     @FXML private ComboBox<SkrzyniaBiegow> gearboxComboBox;
@@ -46,7 +45,6 @@ public class DodajSamochodController {
         gearboxComboBox.getSelectionModel().selectFirst();
     }
 
-    // Metoda pozwalająca ustawić referencję do głównego kontrolera
     public void setMainController(HelloController mainController) {
         this.mainController = mainController;
     }
