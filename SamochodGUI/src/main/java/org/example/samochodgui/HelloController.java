@@ -1,19 +1,3 @@
-/*package org.example.samochodgui;
-
-import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-
-public class HelloController {
-    @FXML
-    private Label welcomeText;
-
-    @FXML
-    protected void onHelloButtonClick() {
-        welcomeText.setText("Welcome to JavaFX Application!");
-    }
-}*/
-
-
 package org.example.samochodgui;
 
 import javafx.fxml.FXML;
@@ -27,6 +11,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import java.io.IOException;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.util.StringConverter;
 
 public class HelloController {
 
@@ -57,24 +45,73 @@ public class HelloController {
     @FXML private TextField clutchStateTextField;
 
     @FXML private ImageView carImageView;
+    @FXML private ComboBox<Samochod> carComboBox;
+
+    private ObservableList<Samochod> listaSamochodow = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
         System.out.println("HelloController initialized");
 
-        Image carImage = new Image(getClass().getResource("/images/car.png").toExternalForm());
+        carComboBox.setItems(listaSamochodow);
+        carComboBox.setConverter(new StringConverter<Samochod>() {
+            @Override
+            public String toString(Samochod car) {
+                if (car == null) return "";
+                return car.getNrRejest();
+            }
 
-        carImageView.setImage(carImage);
-        carImageView.setFitWidth(120);
-        carImageView.setFitHeight(80);
-        carImageView.setTranslateX(0);
-        carImageView.setTranslateY(0);
+            @Override
+            public Samochod fromString(String string) {
+                return null;
+            }
+        });
+
+        carComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (newValue != null) {
+                aktualnySamochod = newValue;
+                refresh();
+                System.out.println("Wybrano samochód: " + newValue.getNrRejest());
+            }
+        });
+        try {
+            Image carImage = new Image(getClass().getResource("/images/car.png").toExternalForm());
+
+            carImageView.setImage(carImage);
+            carImageView.setFitWidth(120);
+            carImageView.setFitHeight(80);
+            carImageView.setTranslateX(0);
+            carImageView.setTranslateY(0);
+        } catch (Exception e) {
+            System.err.println("Błąd obrazka: " + e.getMessage());
+        }
         refresh();
     }
 
 
     private void refresh() {
-        if (aktualnySamochod == null) return;
+        if (aktualnySamochod == null) {
+            modelTextField.setText("");
+            registrationNumberTextField.setText("");
+            weightTextField.setText("");
+            speedTextField.setText("");
+
+            engineNameTextField.setText("");
+            enginePriceTextField.setText("");
+            engineWeightTextField.setText("");
+            rpmTextField.setText("");
+
+            gearboxNameTextField.setText("");
+            gearboxPriceTextField.setText("");
+            gearboxWeightTextField.setText("");
+            gearTextField.setText("");
+
+            clutchNameTextField.setText("");
+            clutchPriceTextField.setText("");
+            clutchWeightTextField.setText("");
+            clutchStateTextField.setText("");
+            return;
+        }
 
         aktualnySamochod.przeliczPredkosc();
 
@@ -138,9 +175,7 @@ public class HelloController {
     private void onGearUpButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
             int stareObroty = aktualnySamochod.getSilnik().getObroty();
-            int staryBieg = aktualnySamochod.getSkrzynia().getAktBieg();
             aktualnySamochod.getSkrzynia().zwiekszBieg();
-            int nowyBieg = aktualnySamochod.getSkrzynia().getAktBieg();
             if (aktualnySamochod.getSkrzynia().getAktBieg() > 1) {
                 int noweObroty = (int) (stareObroty * 0.7);
                 aktualnySamochod.getSilnik().setObroty(noweObroty);
@@ -204,10 +239,9 @@ public class HelloController {
 
     // Górny Panel
     public void dodajSamochodDoListy(Samochod nowySamochod) {
-        System.out.println("Otrzymano nowy samochód: " + nowySamochod.getModel());
-        this.aktualnySamochod = nowySamochod;
-        this.aktualnySamochod.wlacz();
-
+        listaSamochodow.add(nowySamochod);
+        carComboBox.getSelectionModel().select(nowySamochod);
+        System.out.println("Otrzymano nowy samochód i dodano do listy: " + nowySamochod.getModel());
         refresh();
     }
 
