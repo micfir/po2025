@@ -20,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -54,9 +56,19 @@ public class HelloController {
     @FXML private TextField clutchWeightTextField;
     @FXML private TextField clutchStateTextField;
 
+    @FXML private ImageView carImageView;
 
     @FXML
     public void initialize() {
+        System.out.println("HelloController initialized");
+
+        Image carImage = new Image(getClass().getResource("/images/car.png").toExternalForm());
+
+        carImageView.setImage(carImage);
+        carImageView.setFitWidth(120);
+        carImageView.setFitHeight(80);
+        carImageView.setTranslateX(0);
+        carImageView.setTranslateY(0);
         refresh();
     }
 

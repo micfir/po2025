@@ -116,25 +116,6 @@ public class Samochod {
     }
 
     public static void main(String[] args) {
-        /*
-        Silnik silnik = new Silnik("Silnik V4", 100.0, 5000.0, "A", "V4-200", 6000);
-        Sprzeglo sprzeglo = new Sprzeglo("Standardowe sprzęgło", 10.0, 200.0, "A", "B100", true);
-        SkrzyniaBiegow skrzynia = new SkrzyniaBiegow("Skrzynia 6 biegów", 50.0, 1500.0, "A", "GB", 6, sprzeglo);
-        Pozycja start = new Pozycja(0, 0);
 
-        Samochod samochod = new Samochod("KR12345", "ModelX", 200, silnik, skrzynia, start);
-
-        System.out.println(samochod);
-        samochod.wlacz();
-        System.out.println("Stan włączenia: " + Samochod.isStanWlaczenia());
-        System.out.println("Obroty silnika: " + silnik.getObroty());
-        sprzeglo.wcisnij();
-        skrzynia.zwiekszBieg();
-        System.out.println("Aktualny bieg: " + skrzynia.getAktBieg());
-        samochod.jedzDo(new Pozycja(100,50));
-        System.out.println("Pozycja: " + samochod.getAktPozycja());
-        System.out.println("Prędkość: " + samochod.getAktPredkosc());
-        System.out.println(samochod);
-         */
     }
 }
