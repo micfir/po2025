@@ -267,7 +267,20 @@ public class HelloController {
 
     @FXML
     private void onCarDeleteButton() {
-        System.out.println("Panel: Usuwam wybrany samochód (implementacja usuwania).");
+        Samochod doUsuniecia = carComboBox.getSelectionModel().getSelectedItem();
+        if (doUsuniecia != null) {
+            listaSamochodow.remove(doUsuniecia);
+            System.out.println("Usunięto samochód: " + doUsuniecia.getNrRejest());
+
+            if (listaSamochodow.isEmpty()) {
+                aktualnySamochod = null;
+                refresh();
+            } else {
+                carComboBox.getSelectionModel().selectFirst();
+            }
+        } else {
+            System.out.println("Nie wybrano samochodu do usunięcia.");
+        }
     }
 
     @FXML
