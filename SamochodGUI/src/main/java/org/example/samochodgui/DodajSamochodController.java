@@ -13,6 +13,7 @@ public class DodajSamochodController {
     @FXML private TextField modelTextField;
     @FXML private TextField registrationTextField;
     @FXML private TextField speedTextField;
+    @FXML private TextField weightTextField;
 
     @FXML private ComboBox<Silnik> engineComboBox;
     @FXML private ComboBox<SkrzyniaBiegow> gearboxComboBox;
@@ -59,9 +60,16 @@ public class DodajSamochodController {
             return;
         }
 
+        double weight;
         int speed;
         try {
             speed = Integer.parseInt(speedTextField.getText());
+            String weightText = weightTextField.getText();
+            if (weightText.isEmpty()) {
+                weight = 0.0;
+            } else {
+                weight = Double.parseDouble(weightText);
+            }
         } catch (NumberFormatException e) {
             System.out.println("Błąd: Prędkość musi być liczbą całkowitą.");
             return;
@@ -77,7 +85,7 @@ public class DodajSamochodController {
 
         Pozycja domyslnaPozycja = new Pozycja(0, 0);
 
-        Samochod nowySamochod = new Samochod(registration, model, speed, wybranySilnik, wybranaSkrzynia, domyslnaPozycja);
+        Samochod nowySamochod = new Samochod(registration, model, speed, weight, wybranySilnik, wybranaSkrzynia, domyslnaPozycja);
 
         if (mainController != null) {
             mainController.dodajSamochodDoListy(nowySamochod);

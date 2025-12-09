@@ -5,20 +5,21 @@ public class Samochod {
     private String nrRejest;
     private String model;
     private int predkoscMax;
-
+    private double wagaBazowa = 0.0;
     private Silnik silnik;
     private SkrzyniaBiegow  skrzynia;
     private Pozycja aktualnaPozycja;
 
     private int aktualnaPredkosc = 0;
 
-    public Samochod(String nrRejest, String model, int predkoscMax, Silnik silnik, SkrzyniaBiegow skrzynia, Pozycja pozycja) {
+    public Samochod(String nrRejest, String model, int predkoscMax, double wagaBazowa, Silnik silnik, SkrzyniaBiegow skrzynia, Pozycja pozycja) {
         this.nrRejest = nrRejest;
         this.model = model;
         this.predkoscMax = predkoscMax;
         this.silnik = silnik;
         this.skrzynia = skrzynia;
         this.aktualnaPozycja = pozycja;
+        this.wagaBazowa = wagaBazowa;
     }
 
     public void wlacz(){
@@ -46,7 +47,7 @@ public class Samochod {
     }
 
     public double getWaga(){
-        double suma = 0;
+        double suma = this.wagaBazowa;
         if (silnik != null) suma += silnik.getWaga();
         if (skrzynia != null) suma += skrzynia.getWaga();
         if (skrzynia != null && skrzynia.getSprzeglo() != null) suma += skrzynia.getSprzeglo().getWaga();

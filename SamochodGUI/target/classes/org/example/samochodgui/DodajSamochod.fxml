@@ -46,6 +46,9 @@
                 <Label text="Prędkość Max:" GridPane.rowIndex="2" />
                 <TextField fx:id="speedTextField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
+                <Label text="Waga:" GridPane.rowIndex="3" />
+                <TextField fx:id="weightTextField" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
                 <Label text="Wybierz Silnik:" GridPane.rowIndex="4" />
                 <ComboBox fx:id="engineComboBox" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
