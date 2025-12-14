@@ -85,9 +85,17 @@ public class HelloController {
         } catch (Exception e) {
             System.err.println("Błąd obrazka: " + e.getMessage());
         }
+        stworzSamochodTestowy();
         refresh();
     }
-
+    private void stworzSamochodTestowy() {
+        Silnik silnikBMW = new Silnik("BMW S58 3.0L I6", 195, 100000, "BMW", "S58", 7000);
+        Sprzeglo sprzegloFord = new Sprzeglo("Exedy Stage 1 Clutch Kit", 10, 2000, "Exedy", "Stage 1", false);
+        SkrzyniaBiegow skrzyniaFord = new SkrzyniaBiegow("6-bieg Ford MT-82", 60, 8000, "Ford", "MT-82", 6, sprzegloFord);
+        Pozycja pozycjaStartowa = new Pozycja(0, 0);
+        Samochod autoTestowe = new Samochod("TEST BMW","BMW M3 Competition",290,1600.0,silnikBMW, skrzyniaFord, pozycjaStartowa);
+        dodajSamochodDoListy(autoTestowe);
+    }
 
     private void refresh() {
         if (aktualnySamochod == null) {

@@ -95,12 +95,12 @@ public class Samochod {
             return;
         }
 
-
         if (skrzynia != null && skrzynia.getSprzeglo() != null) {
             if (!skrzynia.getSprzeglo().isStanSprzegla()) {
-
-                double nowaPredkosc = silnik.getObroty() * skrzynia.getAktBieg() * 0.008;
-                this.aktualnaPredkosc = (int) nowaPredkosc;
+                double wspolczynnik = skrzynia.getAktualnyWspolczynnik();
+                double obrotyTysiace = silnik.getObroty() / 1000.0;
+                double nowaPredkosc = obrotyTysiace * wspolczynnik;
+                this.aktualnaPredkosc = (int) Math.min(predkoscMax, nowaPredkosc);
 
             }
         }

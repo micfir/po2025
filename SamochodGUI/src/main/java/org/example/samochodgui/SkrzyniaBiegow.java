@@ -8,6 +8,8 @@ public class SkrzyniaBiegow extends Komponent {
     private Sprzeglo sprzeglo;
     private Silnik silnik;
 
+    private final double[] wspolczynnikiPredkosci = {0.0, 8.0, 16.0, 24.0, 32.0, 40.0, 48.0};
+
     public SkrzyniaBiegow(String nazwa, double waga, double cena, String producent, String model, int iloscBiegow, Sprzeglo sprzeglo) {
         super(nazwa, waga, cena, producent, model);
         this.iloscBiegow = iloscBiegow;
@@ -23,13 +25,13 @@ public class SkrzyniaBiegow extends Komponent {
     public void zwiekszBieg(){
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg < iloscBiegow) {
-
+                double staryWsp = getAktualnyWspolczynnik();
                 int stareObroty = silnik.getObroty();
 
                 aktualnyBieg++;
-                aktualnePrzelozenie = obliczPrzelozenie(aktualnyBieg);
-                if (aktualnyBieg > 1) {
-                    int noweObroty = (int) (stareObroty * 0.7);
+                double nowyWsp = getAktualnyWspolczynnik();
+                if (nowyWsp > 0) {
+                    int noweObroty = (int) (stareObroty * (staryWsp / nowyWsp));
                     silnik.setObroty(noweObroty);
                 }
             } else {
@@ -43,13 +45,13 @@ public class SkrzyniaBiegow extends Komponent {
     public void zmniejszBieg(){
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg > 0) {
-
+                double staryWsp = getAktualnyWspolczynnik();
                 int stareObroty = silnik.getObroty();
 
                 aktualnyBieg--;
-                aktualnePrzelozenie = obliczPrzelozenie(aktualnyBieg);
-                if (aktualnyBieg >= 0) {
-                    int noweObroty = (int) (stareObroty * 1.5);
+                double nowyWsp = getAktualnyWspolczynnik();
+                if (nowyWsp > 0) {
+                    int noweObroty = (int) (stareObroty * (staryWsp / nowyWsp));
                     silnik.setObroty(noweObroty);
                 }
             } else {
@@ -60,9 +62,11 @@ public class SkrzyniaBiegow extends Komponent {
         }
     }
 
-    private double obliczPrzelozenie(int bieg){
-        if (bieg == 0) return 1.0;
-        return 1.0 / bieg;
+    public double getAktualnyWspolczynnik() {
+        if (aktualnyBieg >= 0 && aktualnyBieg < wspolczynnikiPredkosci.length) {
+            return wspolczynnikiPredkosci[aktualnyBieg];
+        }
+        return 0.0;
     }
 
     public int getAktBieg(){
