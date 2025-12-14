@@ -20,6 +20,9 @@ public class Samochod {
         this.skrzynia = skrzynia;
         this.aktualnaPozycja = pozycja;
         this.wagaBazowa = wagaBazowa;
+        if (this.skrzynia != null) {
+            this.skrzynia.setSilnik(this.silnik);
+        }
     }
 
     public void wlacz(){

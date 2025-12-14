@@ -6,6 +6,7 @@ public class SkrzyniaBiegow extends Komponent {
     private double aktualnePrzelozenie;
 
     private Sprzeglo sprzeglo;
+    private Silnik silnik;
 
     public SkrzyniaBiegow(String nazwa, double waga, double cena, String producent, String model, int iloscBiegow, Sprzeglo sprzeglo) {
         super(nazwa, waga, cena, producent, model);
@@ -15,29 +16,47 @@ public class SkrzyniaBiegow extends Komponent {
         this.aktualnePrzelozenie = 1.0;
     }
 
+    public void setSilnik(Silnik silnik) {
+        this.silnik = silnik;
+    }
+
     public void zwiekszBieg(){
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg < iloscBiegow) {
+
+                int stareObroty = silnik.getObroty();
+
                 aktualnyBieg++;
                 aktualnePrzelozenie = obliczPrzelozenie(aktualnyBieg);
+                if (aktualnyBieg > 1) {
+                    int noweObroty = (int) (stareObroty * 0.7);
+                    silnik.setObroty(noweObroty);
+                }
             } else {
                 System.out.println("Jest już najwyższy bieg.");
             }
         } else {
-            System.out.println("Nie można zmienić biegu — wciśnij sprzęgło.");
+            System.out.println("Nie można zmienić biegu - wciśnij sprzęgło.");
         }
     }
 
     public void zmniejszBieg(){
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg > 0) {
+
+                int stareObroty = silnik.getObroty();
+
                 aktualnyBieg--;
                 aktualnePrzelozenie = obliczPrzelozenie(aktualnyBieg);
+                if (aktualnyBieg >= 0) {
+                    int noweObroty = (int) (stareObroty * 1.5);
+                    silnik.setObroty(noweObroty);
+                }
             } else {
                 System.out.println("Jest już najniższy bieg.");
             }
         } else {
-            System.out.println("Nie można zmienić biegu — wciśnij sprzęgło.");
+            System.out.println("Nie można zmienić biegu - wciśnij sprzęgło.");
         }
     }
 

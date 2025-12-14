@@ -174,12 +174,7 @@ public class HelloController {
     @FXML
     private void onGearUpButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
-            int stareObroty = aktualnySamochod.getSilnik().getObroty();
             aktualnySamochod.getSkrzynia().zwiekszBieg();
-            if (aktualnySamochod.getSkrzynia().getAktBieg() > 1) {
-                int noweObroty = (int) (stareObroty * 0.7);
-                aktualnySamochod.getSilnik().setObroty(noweObroty);
-            }
             System.out.println("Skrzynia Biegów: Zwiększam bieg.");
             refresh();
         }
@@ -188,12 +183,7 @@ public class HelloController {
     @FXML
     private void onGearDownButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
-            int stareObroty = aktualnySamochod.getSilnik().getObroty();
             aktualnySamochod.getSkrzynia().zmniejszBieg();
-            if (aktualnySamochod.getSkrzynia().getAktBieg() > 0) {
-                int noweObroty = (int) (stareObroty * 1.5);
-                aktualnySamochod.getSilnik().setObroty(noweObroty);
-            }
             System.out.println("Skrzynia Biegów: Zmniejszam bieg.");
             refresh();
         }
