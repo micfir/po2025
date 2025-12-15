@@ -1,4 +1,4 @@
-package Samochód.src.main.java.org.example;
+package org.example;
 
 public class Silnik extends Komponent {
     private int obroty;
@@ -21,11 +21,11 @@ public class Silnik extends Komponent {
     }
 
     public void zwiekszObroty(){
-        if (obroty < maxObroty) obroty++;
+        if (obroty < maxObroty) obroty+=100;
     }
 
     public void zmniejszObroty(){
-        if (obroty > 0) obroty--;
+        if (obroty > 0) obroty-=100;
     }
 
     public int getObroty() {
@@ -34,6 +34,13 @@ public class Silnik extends Komponent {
 
     public int getMaxObroty() {
         return maxObroty;
+    }
+
+    public void setObroty(int noweObroty) {
+        // Zabezpieczenie, żeby nie wyjść poza zakres
+        if (noweObroty < 0) this.obroty = 0;
+        else if (noweObroty > maxObroty) this.obroty = maxObroty;
+        else this.obroty = noweObroty;
     }
 
     @Override

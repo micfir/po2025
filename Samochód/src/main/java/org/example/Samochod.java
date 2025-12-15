@@ -1,24 +1,28 @@
-package Samochód.src.main.java.org.example;
+package org.example;
 
 public class Samochod {
     private static boolean stanWlaczenia = false;
     private String nrRejest;
     private String model;
     private int predkoscMax;
-
+    private double wagaBazowa = 0.0;
     private Silnik silnik;
     private SkrzyniaBiegow  skrzynia;
     private Pozycja aktualnaPozycja;
 
     private int aktualnaPredkosc = 0;
 
-    public Samochod(String nrRejest, String model, int predkoscMax, Silnik silnik, SkrzyniaBiegow skrzynia, Pozycja pozycja) {
+    public Samochod(String nrRejest, String model, int predkoscMax, double wagaBazowa, Silnik silnik, SkrzyniaBiegow skrzynia, Pozycja pozycja) {
         this.nrRejest = nrRejest;
         this.model = model;
         this.predkoscMax = predkoscMax;
         this.silnik = silnik;
         this.skrzynia = skrzynia;
         this.aktualnaPozycja = pozycja;
+        this.wagaBazowa = wagaBazowa;
+        if (this.skrzynia != null) {
+            this.skrzynia.setSilnik(this.silnik);
+        }
     }
 
     public void wlacz(){
@@ -46,11 +50,19 @@ public class Samochod {
     }
 
     public double getWaga(){
-        double suma = 0;
+        double suma = this.wagaBazowa;
         if (silnik != null) suma += silnik.getWaga();
         if (skrzynia != null) suma += skrzynia.getWaga();
         if (skrzynia != null && skrzynia.getSprzeglo() != null) suma += skrzynia.getSprzeglo().getWaga();
         return suma;
+    }
+
+    public Silnik getSilnik() {
+        return silnik;
+    }
+
+    public String getModel() {
+        return model;
     }
 
     public int getAktPredkosc(){
@@ -61,6 +73,10 @@ public class Samochod {
         return aktualnaPozycja;
     }
 
+    public String getNrRejest() {
+        return nrRejest;
+    }
+
     public static void setStanWlaczenia(boolean stan) {
         stanWlaczenia = stan;
     }
@@ -68,6 +84,29 @@ public class Samochod {
     public static boolean isStanWlaczenia() {
         return stanWlaczenia;
     }
+
+    public SkrzyniaBiegow getSkrzynia() {
+        return skrzynia;
+    }
+
+    public void przeliczPredkosc() {
+        if (!stanWlaczenia) {
+            aktualnaPredkosc = 0;
+            return;
+        }
+
+        if (skrzynia != null && skrzynia.getSprzeglo() != null) {
+            if (!skrzynia.getSprzeglo().isStanSprzegla()) {
+                double wspolczynnik = skrzynia.getAktualnyWspolczynnik();
+                double obrotyTysiace = silnik.getObroty() / 1000.0;
+                double nowaPredkosc = obrotyTysiace * wspolczynnik;
+                this.aktualnaPredkosc = (int) Math.min(predkoscMax, nowaPredkosc);
+
+            }
+        }
+    }
+
+
 
     @Override
     public String toString() {
@@ -80,24 +119,6 @@ public class Samochod {
     }
 
     public static void main(String[] args) {
-        // przykładowe wartości (tu możesz podstawić swoje):
-        Silnik silnik = new Silnik("Silnik V4", 100.0, 5000.0, "A", "V4-200", 6000);
-        Sprzeglo sprzeglo = new Sprzeglo("Standardowe sprzęgło", 10.0, 200.0, "A", "B100", true);
-        SkrzyniaBiegow skrzynia = new SkrzyniaBiegow("Skrzynia 6 biegów", 50.0, 1500.0, "A", "GB", 6, sprzeglo);
-        Pozycja start = new Pozycja(0, 0);
 
-        Samochod samochod = new Samochod("KR12345", "ModelX", 200, silnik, skrzynia, start);
-
-        System.out.println(samochod);
-        samochod.wlacz();
-        System.out.println("Stan włączenia: " + Samochod.isStanWlaczenia());
-        System.out.println("Obroty silnika: " + silnik.getObroty());
-        sprzeglo.wcisnij();
-        skrzynia.zwiekszBieg();
-        System.out.println("Aktualny bieg: " + skrzynia.getAktBieg());
-        samochod.jedzDo(new Pozycja(100,50));
-        System.out.println("Pozycja: " + samochod.getAktPozycja());
-        System.out.println("Prędkość: " + samochod.getAktPredkosc());
-        System.out.println(samochod);
     }
 }

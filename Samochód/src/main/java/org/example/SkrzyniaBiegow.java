@@ -1,4 +1,4 @@
-package Samochód.src.main.java.org.example;
+package org.example;
 
 public class SkrzyniaBiegow extends Komponent {
     private int aktualnyBieg;
@@ -6,6 +6,9 @@ public class SkrzyniaBiegow extends Komponent {
     private double aktualnePrzelozenie;
 
     private Sprzeglo sprzeglo;
+    private Silnik silnik;
+
+    private final double[] wspolczynnikiPredkosci = {0.0, 8.0, 16.0, 24.0, 32.0, 40.0, 48.0};
 
     public SkrzyniaBiegow(String nazwa, double waga, double cena, String producent, String model, int iloscBiegow, Sprzeglo sprzeglo) {
         super(nazwa, waga, cena, producent, model);
@@ -15,35 +18,55 @@ public class SkrzyniaBiegow extends Komponent {
         this.aktualnePrzelozenie = 1.0;
     }
 
+    public void setSilnik(Silnik silnik) {
+        this.silnik = silnik;
+    }
+
     public void zwiekszBieg(){
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg < iloscBiegow) {
+                double staryWsp = getAktualnyWspolczynnik();
+                int stareObroty = silnik.getObroty();
+
                 aktualnyBieg++;
-                aktualnePrzelozenie = obliczPrzelozenie(aktualnyBieg);
+                double nowyWsp = getAktualnyWspolczynnik();
+                if (nowyWsp > 0) {
+                    int noweObroty = (int) (stareObroty * (staryWsp / nowyWsp));
+                    silnik.setObroty(noweObroty);
+                }
             } else {
                 System.out.println("Jest już najwyższy bieg.");
             }
         } else {
-            System.out.println("Nie można zmienić biegu — wciśnij sprzęgło.");
+            System.out.println("Nie można zmienić biegu - wciśnij sprzęgło.");
         }
     }
 
     public void zmniejszBieg(){
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg > 0) {
+                double staryWsp = getAktualnyWspolczynnik();
+                int stareObroty = silnik.getObroty();
+
                 aktualnyBieg--;
-                aktualnePrzelozenie = obliczPrzelozenie(aktualnyBieg);
+                double nowyWsp = getAktualnyWspolczynnik();
+                if (nowyWsp > 0) {
+                    int noweObroty = (int) (stareObroty * (staryWsp / nowyWsp));
+                    silnik.setObroty(noweObroty);
+                }
             } else {
                 System.out.println("Jest już najniższy bieg.");
             }
         } else {
-            System.out.println("Nie można zmienić biegu — wciśnij sprzęgło.");
+            System.out.println("Nie można zmienić biegu - wciśnij sprzęgło.");
         }
     }
 
-    private double obliczPrzelozenie(int bieg){
-        if (bieg == 0) return 1.0;
-        return 1.0 / bieg;
+    public double getAktualnyWspolczynnik() {
+        if (aktualnyBieg >= 0 && aktualnyBieg < wspolczynnikiPredkosci.length) {
+            return wspolczynnikiPredkosci[aktualnyBieg];
+        }
+        return 0.0;
     }
 
     public int getAktBieg(){
@@ -57,6 +80,7 @@ public class SkrzyniaBiegow extends Komponent {
     public Sprzeglo getSprzeglo() {
         return sprzeglo;
     }
+
 
     @Override
     public String toString() {

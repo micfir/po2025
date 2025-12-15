@@ -1,4 +1,4 @@
-package Samochód.src.main.java.org.example;
+package org.example;
 
 public class Sprzeglo extends Komponent {
     private boolean stanSprzegla;
