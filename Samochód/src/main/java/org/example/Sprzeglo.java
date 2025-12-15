@@ -8,11 +8,17 @@ public class Sprzeglo extends Komponent {
         this.stanSprzegla = stanSprzegla;
     }
 
-    public void wcisnij(){
+    public void wcisnij() throws SamochodException {
+        if (stanSprzegla) {
+            throw new SamochodException("Sprzęgło jest już wciśnięte.");
+        }
         stanSprzegla = true;
     }
 
-    public void zwolnij(){
+    public void zwolnij() throws SamochodException {
+        if (!stanSprzegla) {
+            throw new SamochodException("Sprzęgło jest już zwolnione.");
+        }
         stanSprzegla = false;
     }
 

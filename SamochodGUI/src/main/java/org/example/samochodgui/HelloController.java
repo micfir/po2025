@@ -1,6 +1,8 @@
 package org.example.samochodgui;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
@@ -158,6 +160,19 @@ public class HelloController {
             boolean wcisniete = sprzeglo.isStanSprzegla();
             clutchStateTextField.setText(wcisniete ? "WCIŚNIĘTE" : "ZWOLNIONE");
         }
+
+        Platform.runLater(() -> {
+            if (aktualnySamochod != null && carImageView != null) {
+                try {
+                    Pozycja aktualnaPozycja = aktualnySamochod.getAktPozycja();
+                    carImageView.setTranslateX(aktualnaPozycja.getX());
+                    carImageView.setTranslateY(aktualnaPozycja.getY());
+
+                } catch (Exception e) {
+                    System.out.println("Błąd: Nie można pobrać pozycji samochodu lub ikony: " + e.getMessage());
+                }
+            }
+        });
     }
 
     // Samochód
@@ -183,8 +198,12 @@ public class HelloController {
     @FXML
     private void onGearUpButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
-            aktualnySamochod.getSkrzynia().zwiekszBieg();
-            System.out.println("Skrzynia Biegów: Zwiększam bieg.");
+            try {
+                aktualnySamochod.getSkrzynia().zwiekszBieg();
+                System.out.println("Skrzynia Biegów: Zwiększam bieg.");
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
             refresh();
         }
     }
@@ -192,8 +211,12 @@ public class HelloController {
     @FXML
     private void onGearDownButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
-            aktualnySamochod.getSkrzynia().zmniejszBieg();
-            System.out.println("Skrzynia Biegów: Zmniejszam bieg.");
+            try {
+                aktualnySamochod.getSkrzynia().zmniejszBieg();
+                System.out.println("Skrzynia Biegów: Zmniejszam bieg.");
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
             refresh();
         }
     }
@@ -221,8 +244,12 @@ public class HelloController {
     @FXML
     private void onClutchEngageButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null && aktualnySamochod.getSkrzynia().getSprzeglo() != null) {
-            aktualnySamochod.getSkrzynia().getSprzeglo().wcisnij();
-            System.out.println("Sprzęgło: Naciśnięte.");
+            try {
+                aktualnySamochod.getSkrzynia().getSprzeglo().wcisnij();
+                System.out.println("Sprzęgło: Naciśnięte.");
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
             refresh();
         }
     }
@@ -230,8 +257,12 @@ public class HelloController {
     @FXML
     private void onClutchReleaseButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null && aktualnySamochod.getSkrzynia().getSprzeglo() != null) {
-            aktualnySamochod.getSkrzynia().getSprzeglo().zwolnij();
-            System.out.println("Sprzęgło: Zwolnione.");
+            try {
+                aktualnySamochod.getSkrzynia().getSprzeglo().zwolnij();
+                System.out.println("Sprzęgło: Zwolnione.");
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
             refresh();
         }
     }
@@ -285,6 +316,14 @@ public class HelloController {
     @FXML
     private void onGenericCarButton() {
         System.out.println("Samochód: Wykonuję ogólną akcję.");
+    }
+
+    public void pokazBlad(String wiadomosc) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Błąd");
+        alert.setHeaderText(null);
+        alert.setContentText(wiadomosc);
+        alert.showAndWait();
     }
 
 

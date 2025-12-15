@@ -35,10 +35,10 @@ public class SkrzyniaBiegow extends Komponent {
                     silnik.setObroty(noweObroty);
                 }
             } else {
-                System.out.println("Jest już najwyższy bieg.");
+                throw new SamochodException("Nie można zwiększyć biegu. Skrzynia posiada maksymalnie " + iloscBiegow + " biegów.");
             }
         } else {
-            System.out.println("Nie można zmienić biegu - wciśnij sprzęgło.");
+            throw new SamochodException("Nie można zmienić biegu - wciśnij sprzęgło.");
         }
     }
 
@@ -55,10 +55,10 @@ public class SkrzyniaBiegow extends Komponent {
                     silnik.setObroty(noweObroty);
                 }
             } else {
-                System.out.println("Jest już najniższy bieg.");
+                throw new SamochodException("Nie można zmniejszyć biegu. Jest już najniższy bieg.");
             }
         } else {
-            System.out.println("Nie można zmienić biegu - wciśnij sprzęgło.");
+            throw new SamochodException("Nie można zmienić biegu - wciśnij sprzęgło.");
         }
     }
 
