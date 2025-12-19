@@ -19,7 +19,7 @@ import javafx.util.StringConverter;
 
 import org.example.*;
 
-public class HelloController {
+public class HelloController implements Listener{
 
     private Samochod aktualnySamochod;
 
@@ -71,8 +71,12 @@ public class HelloController {
         });
 
         carComboBox.getSelectionModel().selectedItemProperty().addListener((options, oldValue, newValue) -> {
+            if (oldValue != null) {
+                oldValue.removeListener(this);
+            }
             if (newValue != null) {
                 aktualnySamochod = newValue;
+                aktualnySamochod.addListener(this);
                 refresh();
                 System.out.println("Wybrano samochód: " + newValue.getNrRejest());
             }
@@ -324,6 +328,11 @@ public class HelloController {
         alert.setHeaderText(null);
         alert.setContentText(wiadomosc);
         alert.showAndWait();
+    }
+
+    @Override
+    public void update(){
+        refresh();
     }
 
 

@@ -1,6 +1,9 @@
 package org.example;
 
-public class Samochod {
+import java.util.ArrayList;
+import java.util.List;
+
+public class Samochod extends Thread{
     private static boolean stanWlaczenia = false;
     private String nrRejest;
     private String model;
@@ -9,8 +12,9 @@ public class Samochod {
     private Silnik silnik;
     private SkrzyniaBiegow  skrzynia;
     private Pozycja aktualnaPozycja;
-
     private int aktualnaPredkosc = 0;
+
+    private List<Listener> listeners = new ArrayList<>();
 
     public Samochod(String nrRejest, String model, int predkoscMax, double wagaBazowa, Silnik silnik, SkrzyniaBiegow skrzynia, Pozycja pozycja) {
         this.nrRejest = nrRejest;
@@ -106,9 +110,19 @@ public class Samochod {
         }
     }
 
+    public void addListener(Listener listener) {
+        listeners.add(listener);
+    }
+    public void removeListener(Listener listener) {
+        listeners.remove(listener);
+    }
+    private void notifyListeners() {
+        for (Listener listener : listeners) {
+            listener.update();
+        }
+    }
 
-
-    @Override
+            @Override
     public String toString() {
         return "Samochod " + model + " [" + nrRejest + "]\n" +
                 "Pozycja: " + aktualnaPozycja + "\n" +
