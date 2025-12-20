@@ -185,7 +185,6 @@ public class HelloController implements Listener{
         if (aktualnySamochod != null) {
             aktualnySamochod.wlacz();
             System.out.println("Samochód: Włączam silnik.");
-            refresh();
         }
     }
 
@@ -194,7 +193,6 @@ public class HelloController implements Listener{
         if (aktualnySamochod != null) {
             aktualnySamochod.wylacz();
             System.out.println("Samochód: Wyłączam silnik.");
-            refresh();
         }
     }
 
@@ -203,12 +201,11 @@ public class HelloController implements Listener{
     private void onGearUpButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
             try {
-                aktualnySamochod.getSkrzynia().zwiekszBieg();
+                aktualnySamochod.zwiekszBieg();
                 System.out.println("Skrzynia Biegów: Zwiększam bieg.");
             } catch (SamochodException e) {
                 pokazBlad(e.getMessage());
             }
-            refresh();
         }
     }
 
@@ -216,12 +213,11 @@ public class HelloController implements Listener{
     private void onGearDownButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null) {
             try {
-                aktualnySamochod.getSkrzynia().zmniejszBieg();
+                aktualnySamochod.zmniejszBieg();
                 System.out.println("Skrzynia Biegów: Zmniejszam bieg.");
             } catch (SamochodException e) {
                 pokazBlad(e.getMessage());
             }
-            refresh();
         }
     }
 
@@ -229,18 +225,16 @@ public class HelloController implements Listener{
     @FXML
     private void onAccelerateButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSilnik() != null) {
-            aktualnySamochod.getSilnik().zwiekszObroty();
+            aktualnySamochod.zwiekszObroty();
             System.out.println("Silnik: Dodaję gazu. Obroty: " + aktualnySamochod.getSilnik().getObroty());
-            refresh();
         }
     }
 
     @FXML
     private void onDecelerateButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSilnik() != null) {
-            aktualnySamochod.getSilnik().zmniejszObroty();
+            aktualnySamochod.zmniejszObroty();
             System.out.println("Silnik: Ujmuję gazu. Obroty: " + aktualnySamochod.getSilnik().getObroty());
-            refresh();
         }
     }
 
@@ -249,12 +243,11 @@ public class HelloController implements Listener{
     private void onClutchEngageButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null && aktualnySamochod.getSkrzynia().getSprzeglo() != null) {
             try {
-                aktualnySamochod.getSkrzynia().getSprzeglo().wcisnij();
+                aktualnySamochod.wcisnijSprzeglo();
                 System.out.println("Sprzęgło: Naciśnięte.");
             } catch (SamochodException e) {
                 pokazBlad(e.getMessage());
             }
-            refresh();
         }
     }
 
@@ -262,12 +255,11 @@ public class HelloController implements Listener{
     private void onClutchReleaseButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSkrzynia() != null && aktualnySamochod.getSkrzynia().getSprzeglo() != null) {
             try {
-                aktualnySamochod.getSkrzynia().getSprzeglo().zwolnij();
+                aktualnySamochod.zwolnijSprzeglo();
                 System.out.println("Sprzęgło: Zwolnione.");
             } catch (SamochodException e) {
                 pokazBlad(e.getMessage());
             }
-            refresh();
         }
     }
 
@@ -332,7 +324,7 @@ public class HelloController implements Listener{
 
     @Override
     public void update(){
-        refresh();
+        javafx.application.Platform.runLater(this::refresh);
     }
 
 

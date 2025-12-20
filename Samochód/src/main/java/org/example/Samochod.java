@@ -29,19 +29,25 @@ public class Samochod extends Thread{
         }
     }
 
-    public void wlacz(){
+    public void wlacz() throws SamochodException {
         if (silnik != null) silnik.uruchom();
+        notifyListeners();
     }
 
-    public void wylacz(){
+    public void wylacz() throws SamochodException {
         if (silnik != null) silnik.zatrzymaj();
         if (skrzynia != null) {
             while (skrzynia.getAktBieg() > 0) {
-                if (skrzynia.getSprzeglo() != null) skrzynia.getSprzeglo().wcisnij();
+                if (skrzynia.getSprzeglo() != null) {
+                    if (!skrzynia.getSprzeglo().isStanSprzegla()) {
+                        skrzynia.getSprzeglo().wcisnij();
+                    }
+                }
                 skrzynia.zmniejszBieg();
             }
         }
         aktualnaPredkosc = 0;
+        notifyListeners();
     }
 
     public void jedzDo(Pozycja cel){
@@ -134,5 +140,47 @@ public class Samochod extends Thread{
 
     public static void main(String[] args) {
 
+    }
+    //Same odwołania z notifyListeners()
+    public void zwiekszBieg() throws SamochodException {
+        if (skrzynia != null) {
+            skrzynia.zwiekszBieg();
+            notifyListeners();
+        }
+    }
+
+    public void zmniejszBieg() throws SamochodException {
+        if (skrzynia != null) {
+            skrzynia.zmniejszBieg();
+            notifyListeners();
+        }
+    }
+
+    public void zwiekszObroty() {
+        if (this.silnik != null) {
+            this.silnik.zwiekszObroty();
+            notifyListeners();
+        }
+    }
+
+    public void zmniejszObroty() {
+        if (this.silnik != null) {
+            this.silnik.zmniejszObroty();
+            notifyListeners();
+        }
+    }
+
+    public void wcisnijSprzeglo() throws SamochodException {
+        if (skrzynia != null && skrzynia.getSprzeglo() != null) {
+            skrzynia.getSprzeglo().wcisnij();
+            notifyListeners();
+        }
+    }
+
+    public void zwolnijSprzeglo() throws SamochodException {
+        if (skrzynia != null && skrzynia.getSprzeglo() != null) {
+            skrzynia.getSprzeglo().zwolnij();
+            notifyListeners();
+        }
     }
 }
