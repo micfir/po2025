@@ -4,7 +4,6 @@ public class SkrzyniaBiegow extends Komponent {
     private int aktualnyBieg;
     private int iloscBiegow = 6;
     private double aktualnePrzelozenie;
-
     private Sprzeglo sprzeglo;
     private Silnik silnik;
 
@@ -22,7 +21,7 @@ public class SkrzyniaBiegow extends Komponent {
         this.silnik = silnik;
     }
 
-    public void zwiekszBieg(){
+    public void zwiekszBieg() throws SamochodException {
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg < iloscBiegow) {
                 double staryWsp = getAktualnyWspolczynnik();
@@ -42,7 +41,7 @@ public class SkrzyniaBiegow extends Komponent {
         }
     }
 
-    public void zmniejszBieg(){
+    public void zmniejszBieg() throws SamochodException {
         if (sprzeglo != null && sprzeglo.isStanSprzegla()) {
             if (aktualnyBieg > 0) {
                 double staryWsp = getAktualnyWspolczynnik();
@@ -69,21 +68,22 @@ public class SkrzyniaBiegow extends Komponent {
         return 0.0;
     }
 
-    public int getAktBieg(){
+    public int getAktBieg() {
         return aktualnyBieg;
     }
 
-    public double getAktPrzelozenie(){
-        return aktualnePrzelozenie;
+    public int getIloscBiegow() {
+        return iloscBiegow;
     }
 
     public Sprzeglo getSprzeglo() {
         return sprzeglo;
     }
 
-
     @Override
     public String toString() {
         return super.toString() + ", bieg=" + aktualnyBieg + "/" + iloscBiegow + ", przelozenie=" + aktualnePrzelozenie;
     }
+
+
 }

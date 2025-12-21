@@ -10,22 +10,20 @@ public class Silnik extends Komponent {
         this.obroty = 0;
     }
 
-    public void uruchom(){
+    public void uruchom() {
         this.obroty = Math.min(2000, maxObroty);
-        Samochod.setStanWlaczenia(true);
     }
 
-    public void zatrzymaj(){
+    public void zatrzymaj() {
         this.obroty = 0;
-        Samochod.setStanWlaczenia(false);
     }
 
-    public void zwiekszObroty(){
-        if (obroty < maxObroty) obroty+=100;
+    public void zwiekszObroty() {
+        if (obroty < maxObroty) obroty += 100;
     }
 
-    public void zmniejszObroty(){
-        if (obroty > 0) obroty-=100;
+    public void zmniejszObroty() {
+        if (obroty > 0) obroty -= 100;
     }
 
     public int getObroty() {
@@ -37,7 +35,6 @@ public class Silnik extends Komponent {
     }
 
     public void setObroty(int noweObroty) {
-        // Zabezpieczenie, żeby nie wyjść poza zakres
         if (noweObroty < 0) this.obroty = 0;
         else if (noweObroty > maxObroty) this.obroty = maxObroty;
         else this.obroty = noweObroty;

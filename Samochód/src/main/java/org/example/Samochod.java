@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Samochod extends Thread {
-    private static boolean stanWlaczenia = false;
+    private volatile boolean stanWlaczenia = false;
     private String nrRejest;
     private String model;
     private int predkoscMax;
@@ -12,7 +12,7 @@ public class Samochod extends Thread {
     private Silnik silnik;
     private SkrzyniaBiegow skrzynia;
     private Pozycja aktualnaPozycja;
-    private int aktualnaPredkosc = 0;
+    private volatile int aktualnaPredkosc = 0;
     private Pozycja celPodrozy;
 
     private List<Listener> listeners = new ArrayList<>();
@@ -32,11 +32,15 @@ public class Samochod extends Thread {
 
     public void wlacz() throws SamochodException {
         if (silnik != null) silnik.uruchom();
+        this.stanWlaczenia = true;
         notifyListeners();
     }
 
     public void wylacz() throws SamochodException {
-        if (silnik != null) silnik.zatrzymaj();
+        if (silnik != null) {
+            silnik.zatrzymaj();
+            this.stanWlaczenia = false;
+        }
         if (skrzynia != null) {
             while (skrzynia.getAktBieg() > 0) {
                 if (skrzynia.getSprzeglo() != null) {
@@ -51,15 +55,11 @@ public class Samochod extends Thread {
         notifyListeners();
     }
 
-    public void jedzDo(Pozycja cel) {
-        if (cel == null) return;
-        this.celPodrozy = cel; // Ustawiamy cel, run() zajmie się resztą
-        System.out.println("Ustawiono cel na: " + cel);
-    }
-
     @Override
     public void run() {
-        while (true) {
+        while (!Thread.interrupted()) {
+            przeliczPredkosc();
+
             if (celPodrozy != null) {
                 double dx = celPodrozy.getX() - aktualnaPozycja.getX();
                 double dy = celPodrozy.getY() - aktualnaPozycja.getY();
@@ -86,6 +86,29 @@ public class Samochod extends Thread {
                 break;
             }
         }
+    }
+
+    public void przeliczPredkosc() {
+        if (!this.stanWlaczenia) {
+            aktualnaPredkosc = 0;
+            return;
+        }
+
+        if (skrzynia != null && skrzynia.getSprzeglo() != null) {
+            if (!skrzynia.getSprzeglo().isStanSprzegla()) {
+                double wspolczynnik = skrzynia.getAktualnyWspolczynnik();
+                double obrotyTysiace = silnik.getObroty() / 1000.0;
+                double nowaPredkosc = obrotyTysiace * wspolczynnik;
+                this.aktualnaPredkosc = (int) Math.min(predkoscMax, nowaPredkosc);
+
+            }
+        }
+    }
+
+    public void jedzDo(Pozycja cel) {
+        if (cel == null) return;
+        this.celPodrozy = cel;
+        System.out.println("Ustawiono cel na: " + cel);
     }
 
     public double getWaga() {
@@ -116,33 +139,16 @@ public class Samochod extends Thread {
         return nrRejest;
     }
 
-    public static void setStanWlaczenia(boolean stan) {
-        stanWlaczenia = stan;
+    public void setStanWlaczenia(boolean stan) {
+        this.stanWlaczenia = stan;
     }
 
-    public static boolean isStanWlaczenia() {
-        return stanWlaczenia;
+    public boolean isStanWlaczenia() {
+        return this.stanWlaczenia;
     }
 
     public SkrzyniaBiegow getSkrzynia() {
         return skrzynia;
-    }
-
-    public void przeliczPredkosc() {
-        if (!stanWlaczenia) {
-            aktualnaPredkosc = 0;
-            return;
-        }
-
-        if (skrzynia != null && skrzynia.getSprzeglo() != null) {
-            if (!skrzynia.getSprzeglo().isStanSprzegla()) {
-                double wspolczynnik = skrzynia.getAktualnyWspolczynnik();
-                double obrotyTysiace = silnik.getObroty() / 1000.0;
-                double nowaPredkosc = obrotyTysiace * wspolczynnik;
-                this.aktualnaPredkosc = (int) Math.min(predkoscMax, nowaPredkosc);
-
-            }
-        }
     }
 
     public void addListener(Listener listener) {
@@ -169,10 +175,6 @@ public class Samochod extends Thread {
                 "Waga (części): " + getWaga() + "kg";
     }
 
-    public static void main(String[] args) {
-
-    }
-
     //Same odwołania z notifyListeners()
     public void zwiekszBieg() throws SamochodException {
         if (skrzynia != null) {
@@ -188,7 +190,10 @@ public class Samochod extends Thread {
         }
     }
 
-    public void zwiekszObroty() {
+    public void zwiekszObroty() throws SamochodException {
+        if (!isStanWlaczenia()) {
+            throw new SamochodException("Uruchom silnik!");
+        }
         if (this.silnik != null) {
             this.silnik.zwiekszObroty();
             notifyListeners();

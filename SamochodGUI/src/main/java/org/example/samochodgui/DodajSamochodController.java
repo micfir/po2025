@@ -11,16 +11,24 @@ import org.example.*;
 
 public class DodajSamochodController {
 
-    @FXML private TextField modelTextField;
-    @FXML private TextField registrationTextField;
-    @FXML private TextField speedTextField;
-    @FXML private TextField weightTextField;
+    @FXML
+    private TextField modelTextField;
+    @FXML
+    private TextField registrationTextField;
+    @FXML
+    private TextField speedTextField;
+    @FXML
+    private TextField weightTextField;
 
-    @FXML private ComboBox<Silnik> engineComboBox;
-    @FXML private ComboBox<SkrzyniaBiegow> gearboxComboBox;
+    @FXML
+    private ComboBox<Silnik> engineComboBox;
+    @FXML
+    private ComboBox<SkrzyniaBiegow> gearboxComboBox;
 
-    @FXML private Button confirmButton;
-    @FXML private Button cancelButton;
+    @FXML
+    private Button confirmButton;
+    @FXML
+    private Button cancelButton;
 
     private HelloController mainController;
 
@@ -76,17 +84,27 @@ public class DodajSamochodController {
             return;
         }
 
-        Silnik wybranySilnik = engineComboBox.getValue();
-        SkrzyniaBiegow wybranaSkrzynia = gearboxComboBox.getValue();
+        Silnik wzorzecSilnika = engineComboBox.getValue();
+        SkrzyniaBiegow wzorzecSkrzyni = gearboxComboBox.getValue();
 
-        if (wybranySilnik == null || wybranaSkrzynia == null) {
+        if (wzorzecSilnika == null || wzorzecSkrzyni == null) {
             System.out.println("Błąd: Musisz wybrać silnik i skrzynię.");
             return;
         }
+        Silnik nowySilnik = getNowySilnik(wzorzecSilnika);
+
+        SkrzyniaBiegow nowaSkrzynia = getSkrzyniaBiegow(wzorzecSkrzyni);
 
         Pozycja domyslnaPozycja = new Pozycja(0, 0);
 
-        Samochod nowySamochod = new Samochod(registration, model, speed, weight, wybranySilnik, wybranaSkrzynia, domyslnaPozycja);
+        Samochod nowySamochod = new Samochod(
+                registration,
+                model,
+                speed,
+                weight,
+                nowySilnik,
+                nowaSkrzynia,
+                domyslnaPozycja);
 
         if (mainController != null) {
             mainController.dodajSamochodDoListy(nowySamochod);
@@ -94,6 +112,39 @@ public class DodajSamochodController {
 
         Stage stage = (Stage) confirmButton.getScene().getWindow();
         stage.close();
+    }
+
+    private static Silnik getNowySilnik(Silnik wzorzec) {
+        return new Silnik(
+                wzorzec.getNazwa(),
+                wzorzec.getWaga(),
+                wzorzec.getCena(),
+                wzorzec.getProducent(),
+                wzorzec.getModel(),
+                wzorzec.getMaxObroty()
+        );
+    }
+
+    private static SkrzyniaBiegow getSkrzyniaBiegow(SkrzyniaBiegow wzorzecSkrzyni) {
+        Sprzeglo wzorzecSprzegla = wzorzecSkrzyni.getSprzeglo();
+
+        Sprzeglo noweSprzeglo = new Sprzeglo(
+                wzorzecSprzegla.getNazwa(),
+                wzorzecSprzegla.getWaga(),
+                wzorzecSprzegla.getCena(),
+                wzorzecSprzegla.getProducent(),
+                wzorzecSprzegla.getModel(),
+                false);
+
+        SkrzyniaBiegow nowaSkrzynia = new SkrzyniaBiegow(
+                wzorzecSkrzyni.getNazwa(),
+                wzorzecSkrzyni.getWaga(),
+                wzorzecSkrzyni.getCena(),
+                wzorzecSkrzyni.getProducent(),
+                wzorzecSkrzyni.getModel(),
+                wzorzecSkrzyni.getIloscBiegow(),
+                noweSprzeglo);
+        return nowaSkrzynia;
     }
 
     @FXML

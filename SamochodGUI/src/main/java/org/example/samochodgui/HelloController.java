@@ -148,8 +148,6 @@ public class HelloController implements Listener {
             return;
         }
 
-        aktualnySamochod.przeliczPredkosc();
-
         // Samochód
         modelTextField.setText(aktualnySamochod.getModel());
         registrationNumberTextField.setText(aktualnySamochod.getNrRejest());
@@ -164,7 +162,8 @@ public class HelloController implements Listener {
             engineNameTextField.setText(silnik.getNazwa());
             enginePriceTextField.setText(String.format("%.2f", silnik.getCena()));
             engineWeightTextField.setText(String.format("%.1f", silnik.getWaga()));
-            rpmTextField.setText(String.valueOf(silnik.getObroty()));
+            String rpmDisplay = silnik.getObroty() + " / " + silnik.getMaxObroty();
+            rpmTextField.setText(rpmDisplay);
         }
 
         // Skrzynia biegów
@@ -172,7 +171,8 @@ public class HelloController implements Listener {
             gearboxNameTextField.setText(skrzynia.getNazwa());
             gearboxPriceTextField.setText(String.format("%.2f", skrzynia.getCena()));
             gearboxWeightTextField.setText(String.format("%.1f", skrzynia.getWaga()));
-            gearTextField.setText(String.valueOf(skrzynia.getAktBieg()));
+            String gearDisplay = skrzynia.getAktBieg() + " / " + skrzynia.getIloscBiegow();
+            gearTextField.setText(gearDisplay);
         }
 
         // Sprzęgło
@@ -253,8 +253,12 @@ public class HelloController implements Listener {
     @FXML
     private void onAccelerateButton() {
         if (aktualnySamochod != null && aktualnySamochod.getSilnik() != null) {
-            aktualnySamochod.zwiekszObroty();
-            System.out.println("Silnik: Dodaję gazu. Obroty: " + aktualnySamochod.getSilnik().getObroty());
+            try {
+                aktualnySamochod.zwiekszObroty();
+                System.out.println("Silnik: Dodaję gazu. Obroty: " + aktualnySamochod.getSilnik().getObroty());
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
         }
     }
 
@@ -326,6 +330,7 @@ public class HelloController implements Listener {
     private void onCarDeleteButton() {
         Samochod doUsuniecia = carComboBox.getSelectionModel().getSelectedItem();
         if (doUsuniecia != null) {
+            doUsuniecia.interrupt();
             listaSamochodow.remove(doUsuniecia);
             System.out.println("Usunięto samochód: " + doUsuniecia.getNrRejest());
 
