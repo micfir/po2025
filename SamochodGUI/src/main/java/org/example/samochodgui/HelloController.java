@@ -11,6 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 import java.io.IOException;
 
 import javafx.collections.FXCollections;
@@ -19,36 +20,54 @@ import javafx.util.StringConverter;
 
 import org.example.*;
 
-public class HelloController implements Listener{
+public class HelloController implements Listener {
 
     private Samochod aktualnySamochod;
 
     // Samochód
-    @FXML private TextField modelTextField;
-    @FXML private TextField registrationNumberTextField;
-    @FXML private TextField weightTextField;
-    @FXML private TextField speedTextField;
+    @FXML
+    private TextField modelTextField;
+    @FXML
+    private TextField registrationNumberTextField;
+    @FXML
+    private TextField weightTextField;
+    @FXML
+    private TextField speedTextField;
 
     // Skrzynia Biegów
-    @FXML private TextField gearboxNameTextField;
-    @FXML private TextField gearboxPriceTextField;
-    @FXML private TextField gearboxWeightTextField;
-    @FXML private TextField gearTextField;
+    @FXML
+    private TextField gearboxNameTextField;
+    @FXML
+    private TextField gearboxPriceTextField;
+    @FXML
+    private TextField gearboxWeightTextField;
+    @FXML
+    private TextField gearTextField;
 
     // Silnik
-    @FXML private TextField engineNameTextField;
-    @FXML private TextField enginePriceTextField;
-    @FXML private TextField engineWeightTextField;
-    @FXML private TextField rpmTextField;
+    @FXML
+    private TextField engineNameTextField;
+    @FXML
+    private TextField enginePriceTextField;
+    @FXML
+    private TextField engineWeightTextField;
+    @FXML
+    private TextField rpmTextField;
 
     // Sprzęgło
-    @FXML private TextField clutchNameTextField;
-    @FXML private TextField clutchPriceTextField;
-    @FXML private TextField clutchWeightTextField;
-    @FXML private TextField clutchStateTextField;
+    @FXML
+    private TextField clutchNameTextField;
+    @FXML
+    private TextField clutchPriceTextField;
+    @FXML
+    private TextField clutchWeightTextField;
+    @FXML
+    private TextField clutchStateTextField;
 
-    @FXML private ImageView carImageView;
-    @FXML private ComboBox<Samochod> carComboBox;
+    @FXML
+    private ImageView carImageView;
+    @FXML
+    private ComboBox<Samochod> carComboBox;
 
     private ObservableList<Samochod> listaSamochodow = FXCollections.observableArrayList();
 
@@ -95,12 +114,13 @@ public class HelloController implements Listener{
         stworzSamochodTestowy();
         refresh();
     }
+
     private void stworzSamochodTestowy() {
         Silnik silnikBMW = new Silnik("BMW S58 3.0L I6", 195, 100000, "BMW", "S58", 7000);
         Sprzeglo sprzegloFord = new Sprzeglo("Exedy Stage 1 Clutch Kit", 10, 2000, "Exedy", "Stage 1", false);
         SkrzyniaBiegow skrzyniaFord = new SkrzyniaBiegow("6-bieg Ford MT-82", 60, 8000, "Ford", "MT-82", 6, sprzegloFord);
         Pozycja pozycjaStartowa = new Pozycja(0, 0);
-        Samochod autoTestowe = new Samochod("TEST BMW","BMW M3 Competition",290,1600.0,silnikBMW, skrzyniaFord, pozycjaStartowa);
+        Samochod autoTestowe = new Samochod("TEST BMW", "BMW M3 Competition", 290, 1600.0, silnikBMW, skrzyniaFord, pozycjaStartowa);
         dodajSamochodDoListy(autoTestowe);
     }
 
@@ -183,16 +203,24 @@ public class HelloController implements Listener{
     @FXML
     private void onCarStartButton() {
         if (aktualnySamochod != null) {
-            aktualnySamochod.wlacz();
-            System.out.println("Samochód: Włączam silnik.");
+            try {
+                aktualnySamochod.wlacz();
+                System.out.println("Samochód: Włączam silnik.");
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
         }
     }
 
     @FXML
     private void onCarStopButton() {
         if (aktualnySamochod != null) {
-            aktualnySamochod.wylacz();
-            System.out.println("Samochód: Wyłączam silnik.");
+            try {
+                aktualnySamochod.wylacz();
+                System.out.println("Samochód: Wyłączam silnik.");
+            } catch (SamochodException e) {
+                pokazBlad(e.getMessage());
+            }
         }
     }
 
@@ -266,6 +294,9 @@ public class HelloController implements Listener{
     // Górny Panel
     public void dodajSamochodDoListy(Samochod nowySamochod) {
         listaSamochodow.add(nowySamochod);
+        if (nowySamochod.getState() == Thread.State.NEW) {
+            nowySamochod.start();
+        }
         carComboBox.getSelectionModel().select(nowySamochod);
         System.out.println("Otrzymano nowy samochód i dodano do listy: " + nowySamochod.getModel());
         refresh();
@@ -323,9 +354,17 @@ public class HelloController implements Listener{
     }
 
     @Override
-    public void update(){
+    public void update() {
         javafx.application.Platform.runLater(this::refresh);
     }
 
+    @FXML
+    private void onMapMouseClicked(javafx.scene.input.MouseEvent event) {
+        if (aktualnySamochod != null) {
+            Pozycja cel = new Pozycja(event.getX(), event.getY());
+            aktualnySamochod.jedzDo(cel);
+            System.out.println("Kliknięto mapę: " + cel);
+        }
+    }
 
 }

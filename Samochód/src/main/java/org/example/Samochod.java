@@ -3,16 +3,17 @@ package org.example;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Samochod extends Thread{
+public class Samochod extends Thread {
     private static boolean stanWlaczenia = false;
     private String nrRejest;
     private String model;
     private int predkoscMax;
     private double wagaBazowa = 0.0;
     private Silnik silnik;
-    private SkrzyniaBiegow  skrzynia;
+    private SkrzyniaBiegow skrzynia;
     private Pozycja aktualnaPozycja;
     private int aktualnaPredkosc = 0;
+    private Pozycja celPodrozy;
 
     private List<Listener> listeners = new ArrayList<>();
 
@@ -50,16 +51,44 @@ public class Samochod extends Thread{
         notifyListeners();
     }
 
-    public void jedzDo(Pozycja cel){
+    public void jedzDo(Pozycja cel) {
         if (cel == null) return;
-        double dx = cel.getX() - this.aktualnaPozycja.getX();
-        double dy = cel.getY() - this.aktualnaPozycja.getY();
-        this.aktualnaPozycja.aktualizujPozycje(dx, dy);
-        if (stanWlaczenia) this.aktualnaPredkosc = Math.min(predkoscMax, predkoscMax/2);
-        else this.aktualnaPredkosc = 0;
+        this.celPodrozy = cel; // Ustawiamy cel, run() zajmie się resztą
+        System.out.println("Ustawiono cel na: " + cel);
     }
 
-    public double getWaga(){
+    @Override
+    public void run() {
+        while (true) {
+            if (celPodrozy != null) {
+                double dx = celPodrozy.getX() - aktualnaPozycja.getX();
+                double dy = celPodrozy.getY() - aktualnaPozycja.getY();
+                double odleglosc = Math.sqrt(dx * dx + dy * dy);
+
+                if (odleglosc < 5) {
+                    aktualnaPozycja.aktualizujPozycje(dx, dy);
+                    celPodrozy = null;
+                } else {
+                    double krok = this.aktualnaPredkosc / 200.0;
+                    if (krok > 0) {
+                        double ruchX = (dx / odleglosc) * krok;
+                        double ruchY = (dy / odleglosc) * krok;
+
+                        aktualnaPozycja.aktualizujPozycje(ruchX, ruchY);
+                    }
+                }
+                notifyListeners();
+            }
+
+            try {
+                Thread.sleep(5);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    public double getWaga() {
         double suma = this.wagaBazowa;
         if (silnik != null) suma += silnik.getWaga();
         if (skrzynia != null) suma += skrzynia.getWaga();
@@ -75,11 +104,11 @@ public class Samochod extends Thread{
         return model;
     }
 
-    public int getAktPredkosc(){
+    public int getAktPredkosc() {
         return aktualnaPredkosc;
     }
 
-    public Pozycja getAktPozycja(){
+    public Pozycja getAktPozycja() {
         return aktualnaPozycja;
     }
 
@@ -119,16 +148,18 @@ public class Samochod extends Thread{
     public void addListener(Listener listener) {
         listeners.add(listener);
     }
+
     public void removeListener(Listener listener) {
         listeners.remove(listener);
     }
+
     private void notifyListeners() {
         for (Listener listener : listeners) {
             listener.update();
         }
     }
 
-            @Override
+    @Override
     public String toString() {
         return "Samochod " + model + " [" + nrRejest + "]\n" +
                 "Pozycja: " + aktualnaPozycja + "\n" +
@@ -141,6 +172,7 @@ public class Samochod extends Thread{
     public static void main(String[] args) {
 
     }
+
     //Same odwołania z notifyListeners()
     public void zwiekszBieg() throws SamochodException {
         if (skrzynia != null) {
